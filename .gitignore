@@ -1,2 +1,5 @@
 #  all files in weatherman directory
 /weatherman
+.DS_Store
+/data
+*.pyc

@@ -5,9 +5,10 @@ def parse_txt_file(file_path, params):
     }  # create a dictionary with keys as the parameters and empty arrays to store the data
 
     with open(file_path, "r") as file:
-        header = [i for i in file.readline().split(",")]
-        print(header)
+        # read the header to identify places
+        header = [i.strip() for i in file.readline().split(",")]
 
+        # read the records
         data = file.readlines()
 
     # processing the data and creating disitnct arrays for each parameter

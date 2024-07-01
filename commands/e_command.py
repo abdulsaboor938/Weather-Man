@@ -50,7 +50,7 @@ def handle_e_command(year, dir_path=DATA_DIR):
     print(f'Lowest: {min(min_temp["value"])} on {month_names[int(min_temp_val.split('-')[1])]} {min_temp_val.split('-')[2]}')
 
     max_humidity_val= max_humidity["date"][max_humidity["value"].index(max(max_humidity["value"]))]
-    print(f'Max Humidity: {max(max_humidity["value"])} on {month_names[int(max_humidity_val.split('-')[1])]} {max_humidity_val.split('-')[2]}')
+    print(f'Max Humidity: {max(max_humidity["value"])}% on {month_names[int(max_humidity_val.split('-')[1])]} {max_humidity_val.split('-')[2]}')
 
 
 

@@ -1,21 +1,19 @@
 import argparse
 import os
+import shutil
 import zipfile
 from commands.c_command import handle_c_command
+from commands.e_command import handle_e_command
 
 
 def handle_a_command(date):
     print(f"Executing 'a' command with date: {date}")
 
 
-def handle_e_command(year):
-    print(f"Executing 'e' command with year: {year}")
-
-
 def handle_files_dir(files_dir):
-    # delete the data folder if it exists
+    # delete the data folder if it exists, even if it's not empty
     if os.path.exists("data"):
-        os.rmdir("data")
+        shutil.rmtree("data")
 
     # extracting the zip file to data folder
     with zipfile.ZipFile("weatherfiles.zip", "r") as zip_ref:

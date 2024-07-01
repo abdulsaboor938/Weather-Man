@@ -1,9 +1,7 @@
 import argparse
 import os
-
-
-def handle_c_command(date):
-    print(f"Executing 'c' command with date: {date}")
+import zipfile
+from commands.c_command import handle_c_command
 
 
 def handle_a_command(date):
@@ -15,7 +13,13 @@ def handle_e_command(year):
 
 
 def handle_files_dir(files_dir):
-    print(f"Executing 'files-dir' command with path: {files_dir}")
+    # delete the data folder if it exists
+    if os.path.exists("data"):
+        os.rmdir("data")
+
+    # extracting the zip file to data folder
+    with zipfile.ZipFile("weatherfiles.zip", "r") as zip_ref:
+        zip_ref.extractall("data")
 
 
 def main():
@@ -43,19 +47,19 @@ def main():
     args = parser.parse_args()
 
     # Check if the files directory exists
-    if not os.path.isdir(args.files_dir):
+    if not os.path.exists(args.files_dir):
         print(f"Error: '{args.files_dir}' is not a valid directory.")
         parser.print_usage()
         return
 
     # Call the relevant functions based on the provided arguments
+    handle_files_dir(args.files_dir)
     if args.c_date:
-        handle_c_command(args.c_date)
+        handle_c_command(args.c_date, args.files_dir)
     if args.a_date:
         handle_a_command(args.a_date)
     if args.e_year:
         handle_e_command(args.e_year)
-    handle_files_dir(args.files_dir)
 
 
 if __name__ == "__main__":

@@ -21,5 +21,6 @@ def parse_file(file_path, params):
             return parse_xlsx_file(file_path, params)
         else:
             raise ValueError("Invalid file extension")
+
     except Exception:
         return "File not found or invalid file extension"

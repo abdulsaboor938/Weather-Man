@@ -1,6 +1,6 @@
-from parse_tsv import parse_tsv_file
-from parse_txt import parse_txt_file
-from parse_xlsx import parse_xlsx_file
+from parser.parse_tsv import parse_tsv_file
+from parser.parse_txt import parse_txt_file
+from parser.parse_xlsx import parse_xlsx_file
 
 
 def parse_file(file_path, params):
@@ -21,5 +21,6 @@ def parse_file(file_path, params):
             return parse_xlsx_file(file_path, params)
         else:
             raise ValueError("Invalid file extension")
-    except Exception as e:
+
+    except Exception:
         return "File not found or invalid file extension"

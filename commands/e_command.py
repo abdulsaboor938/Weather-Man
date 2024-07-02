@@ -40,19 +40,27 @@ def handle_e_command(year, dir_path=DATA_DIR):
         max_humidity['date'].append(parsed_data['PKT'][parsed_data['Max Humidity'].index(max_humidity['value'][-1])])
 
     # defining dictionary for month names
-    month_names = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
-
+    month_names = {
+            1: "Jan",
+            2: "Feb",
+            3: "Mar",
+            4: "Apr",
+            5: "May",
+            6: "Jun",
+            7: "Jul",
+            8: "Aug",
+            9: "Sep",
+            10: "Oct",
+            11: "Nov",
+            12: "Dec",
+        }
+    
     # printing the data
     max_temp_val= max_temp["date"][max_temp["value"].index(max(max_temp["value"]))]
-    print(f'Highest: {max(max_temp["value"])} on {month_names[int(max_temp_val.split('-')[1])]} {max_temp_val.split('-')[2]}')
+    print(f'\nHighest: {max(max_temp["value"])}C on {month_names[int(max_temp_val.split('-')[1])]} {max_temp_val.split('-')[2]}')
 
     min_temp_val= min_temp["date"][min_temp["value"].index(min(min_temp["value"]))]
-    print(f'Lowest: {min(min_temp["value"])} on {month_names[int(min_temp_val.split('-')[1])]} {min_temp_val.split('-')[2]}')
+    print(f'Lowest: {min(min_temp["value"])}C on {month_names[int(min_temp_val.split('-')[1])]} {min_temp_val.split('-')[2]}')
 
     max_humidity_val= max_humidity["date"][max_humidity["value"].index(max(max_humidity["value"]))]
     print(f'Max Humidity: {max(max_humidity["value"])}% on {month_names[int(max_humidity_val.split('-')[1])]} {max_humidity_val.split('-')[2]}')
-
-
-
-if __name__ == "__main__":
-    handle_e_command("2007")

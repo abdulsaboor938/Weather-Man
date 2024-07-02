@@ -1,19 +1,26 @@
 import argparse
 import os
-import shutil
 import zipfile
 from commands.c_command import handle_c_command
-from commands.e_command import handle_e_command
+<<<<<<< Updated upstream
 
 
 def handle_a_command(date):
     print(f"Executing 'a' command with date: {date}")
+=======
+from commands.e_command import handle_e_command
+from commands.a_command import handle_a_command
+>>>>>>> Stashed changes
+
+
+def handle_e_command(year):
+    print(f"Executing 'e' command with year: {year}")
 
 
 def handle_files_dir(files_dir):
-    # delete the data folder if it exists, even if it's not empty
+    # delete the data folder if it exists
     if os.path.exists("data"):
-        shutil.rmtree("data")
+        os.rmdir("data")
 
     # extracting the zip file to data folder
     with zipfile.ZipFile("weatherfiles.zip", "r") as zip_ref:
@@ -52,12 +59,12 @@ def main():
 
     # Call the relevant functions based on the provided arguments
     handle_files_dir(args.files_dir)
-    if args.c_date:
-        handle_c_command(args.c_date, args.files_dir)
     if args.a_date:
         handle_a_command(args.a_date)
     if args.e_year:
         handle_e_command(args.e_year)
+    if args.c_date:
+        handle_c_command(args.c_date)
 
 
 if __name__ == "__main__":

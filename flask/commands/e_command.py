@@ -79,15 +79,15 @@ def handle_e_command(year, dir_path=DATA_DIR):
 
     return {
         "Highest": {
-            "Temperature": f"{max(max_temp["value"])}C",
+            "Temperature": f"{max(max_temp['value'])}C",
             "Date": f"{month_names[int(max_temp_val.split('-')[1])]} {max_temp_val.split('-')[2]}",
         },
         "Lowest": {
-            "Temperature": f"{min(min_temp["value"])}C",
+            "Temperature": f"{min(min_temp['value'])}C",
             "Date": f"{month_names[int(min_temp_val.split('-')[1])]} {min_temp_val.split('-')[2]}",
         },
         "Max Humidity": {
-            "Humidity": f"{max(max_humidity["value"])}%",
+            "Humidity": f"{max(max_humidity['value'])}%",
             "Date": f"{month_names[int(max_humidity_val.split('-')[1])]} {max_humidity_val.split('-')[2]}",
         },
     }

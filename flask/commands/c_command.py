@@ -42,13 +42,12 @@ def handle_c_command(date, dir_path=DATA_DIR):
         f for f in os.listdir(dir_path) if year in f and month_names[int(month)] in f
     ]
 
-
     if not file:
         print("No data found for the given date")
         return
 
     parsed_data = parse_file(
-        (DATA_DIR+'/'+file[0]),
+        (DATA_DIR + "/" + file[0]),
         ["Max TemperatureC", "Min TemperatureC", "Mean Humidity"],
     )
 
@@ -66,11 +65,11 @@ def handle_c_command(date, dir_path=DATA_DIR):
 
     min_temperature = int(min(parsed_data["Min TemperatureC"]))
 
-    return_dict ={}
+    return_dict = {}
     for i in range(len(parsed_data["Max TemperatureC"])):
-        return_dict[i+1] ={
-            "Max Temperature" : f"{'+'*(parsed_data["Max TemperatureC"][i]-min_temperature)} {parsed_data["Max TemperatureC"][i]}C",
-            "Min_Temperature" : f"{'+'*(parsed_data["Min TemperatureC"][i]-min_temperature)} {parsed_data["Min TemperatureC"][i]}C"
+        return_dict[i + 1] = {
+            "Max Temperature": f"{'+'*(parsed_data['Max TemperatureC'][i]-min_temperature)} {parsed_data['Max TemperatureC'][i]}C",
+            "Min_Temperature": f"{'+'*(parsed_data['Min TemperatureC'][i]-min_temperature)} {parsed_data['Min TemperatureC'][i]}C",
         }
 
     return {"Date": f"\n{month_names[int(month)]} {year}", "Data": return_dict}

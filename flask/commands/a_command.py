@@ -43,10 +43,10 @@ def handle_a_command(date, dir_path=DATA_DIR):
     ]
 
     if not file:
-        return{'message':"No data found for the given date"}
+        return {"message": "No data found for the given date"}
 
     parsed_data = parse_file(
-        (DATA_DIR+'/'+file[0]),
+        (DATA_DIR + "/" + file[0]),
         ["Max TemperatureC", "Min TemperatureC", "Mean Humidity"],
     )
 
@@ -66,10 +66,9 @@ def handle_a_command(date, dir_path=DATA_DIR):
     parsed_data["Min TemperatureC"] = list(map(int, parsed_data["Min TemperatureC"]))
     parsed_data["Mean Humidity"] = list(map(int, parsed_data["Mean Humidity"]))
 
-
     # return dictionary
     return {
         "Highest Average": f"{int(sum(parsed_data['Max TemperatureC'])/len(parsed_data['Max TemperatureC']))}C",
-        "Lowest Average": f"{int(sum(parsed_data["Min TemperatureC"])/len(parsed_data["Min TemperatureC"]))}C",
-        "Mean Humidity": f"{int(sum(parsed_data["Mean Humidity"])/len(parsed_data["Mean Humidity"]))}%"
+        "Lowest Average": f"{int(sum(parsed_data['Min TemperatureC'])/len(parsed_data['Min TemperatureC']))}C",
+        "Mean Humidity": f"{int(sum(parsed_data['Mean Humidity'])/len(parsed_data['Mean Humidity']))}%",
     }

@@ -8,9 +8,9 @@ from config import DATA_DIR
 from parser.parse_any import parse_file
 
 
-def handle_c_command(date, dir_path=DATA_DIR):
+def handle_a_command(date, dir_path=DATA_DIR):
     """
-    This function parses files for given year and prints graphs
+    This function parses files for given year and gives highest temperature, lowest temperature and max humiidty along with dates
 
     Params:
     - year: year for which data is to be displayed
@@ -42,28 +42,41 @@ def handle_c_command(date, dir_path=DATA_DIR):
         f for f in os.listdir(dir_path) if year in f and month_names[int(month)] in f
     ]
 
-
     if not file:
         print("No data found for the given date")
         return
 
     parsed_data = parse_file(
-        "/Users/carbon/Desktop/Weather Man/data/weatherfiles/Murree_weather_2007_May.txt",
+        (DATA_DIR + "/" + file[0]),
         ["Max TemperatureC", "Min TemperatureC", "Mean Humidity"],
     )
+
+    # replace empty strings with 0
+    parsed_data["Max TemperatureC"] = [
+        0 if x == "" else x for x in parsed_data["Max TemperatureC"]
+    ]
+    parsed_data["Min TemperatureC"] = [
+        0 if x == "" else x for x in parsed_data["Min TemperatureC"]
+    ]
+    parsed_data["Mean Humidity"] = [
+        0 if x == "" else x for x in parsed_data["Mean Humidity"]
+    ]
 
     # convert array elements to int
     parsed_data["Max TemperatureC"] = list(map(int, parsed_data["Max TemperatureC"]))
     parsed_data["Min TemperatureC"] = list(map(int, parsed_data["Min TemperatureC"]))
+    parsed_data["Mean Humidity"] = list(map(int, parsed_data["Mean Humidity"]))
 
-    min_temperature = int(min(parsed_data["Min TemperatureC"]))
+    print(
+        f"\nHighest Average: {int(sum(parsed_data['Max TemperatureC'])/len(parsed_data['Max TemperatureC']))}C"
+    )
+    print(
+        f'Lowest Average: {int(sum(parsed_data["Min TemperatureC"])/len(parsed_data["Min TemperatureC"]))}C'
+    )
+    print(
+        f'Mean Humidity: {int(sum(parsed_data["Mean Humidity"])/len(parsed_data["Mean Humidity"]))}%'
+    )
 
-    print(f"\n{month_names[int(month)]} {year}")
-    for i in range(len(parsed_data["Max TemperatureC"])):
-        # cahnge terminal color to red
-        print("\033[91m", end="")
-        print(f"{i+1} {'+'*(parsed_data["Max TemperatureC"][i]-min_temperature)} {parsed_data["Max TemperatureC"][i]}C")
 
-        # change terminal color to blue
-        print("\033[94m", end="")
-        print(f"{i+1} {'+'*(parsed_data["Min TemperatureC"][i]-min_temperature)} {parsed_data["Min TemperatureC"][i]}C")
+if __name__ == "__main__":
+    print(handle_a_command("2005/7"))

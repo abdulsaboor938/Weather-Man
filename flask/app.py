@@ -1,5 +1,8 @@
 # this file will accept multiple arguments in an api call and call specific functions based on given argument
 
+import os
+import shutil
+import zipfile
 from flask import Flask, request, jsonify
 from commands.a_command import handle_a_command
 from commands.c_command import handle_c_command
@@ -20,6 +23,14 @@ def home():
                 {"e": "Execute the 'e' command with the given year (YYYY)"},
             ],
         }
+
+    # extracting zip file if not already extracted
+    if os.path.exists("data"):
+        shutil.rmtree("data")
+
+    # extracting the zip file to data folder
+    with zipfile.ZipFile("weatherfiles.zip", "r") as zip_ref:
+        zip_ref.extractall("data")
 
     response = {}
     if "a" in request.args:

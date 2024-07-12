@@ -1,93 +1,70 @@
 import os
 import sys
+from typing import Dict, List
 
 # Ensure the root directory is in the sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import DATA_DIR
-
+from config import DATA_DIR, PKT, MAX_TEMP, MIN_TEMP, MAX_HUMIDITY, MONTH_NAMES
 from parser.parse_any import parse_file
+from commands.utils import find_extreme_value_and_date, format_date
 
 
-def handle_e_command(year, dir_path=DATA_DIR):
+def handle_e_command(year: str, dir_path: str = DATA_DIR) -> Dict[str, Dict[str, str]]:
     """
-    This function parses files for given year and gives highest temperature, lowest temperature and max humiidty along with dates
+    Parse files for given year and return highest temperature, lowest temperature,
+    and max humidity along with dates.
 
-    Params:
-    - year: year for which data is to be displayed
-    - dir_path: directory where data is stored
+    Args:
+    year (str): Year for which data is to be displayed
+    dir_path (str): Directory where data is stored
+
+    Returns:
+    dict: Parsed data in a structured format
     """
-
-    # list all files in the directory containing year in the name
     files = [f for f in os.listdir(dir_path) if year in f]
 
-    # defining dictionaries to store data
-    max_temp = {"date": [], "value": []}
-    min_temp = {"date": [], "value": []}
-    max_humidity = {"date": [], "value": []}
+    max_temp = {"value": [], "date": []}
+    min_temp = {"value": [], "date": []}
+    max_humidity = {"value": [], "date": []}
 
-    # iterate and calculate metrics
-    for i in files:
+    for file in files:
         parsed_data = parse_file(
-            (DATA_DIR + "/" + i),
-            ["PKT", "Max TemperatureC", "Min TemperatureC", "Max Humidity"],
+            os.path.join(DATA_DIR, file),
+            [PKT, MAX_TEMP, MIN_TEMP, MAX_HUMIDITY],
         )
 
-        # adding to datastructure
-        max_temp["value"].append(max(parsed_data["Max TemperatureC"]))
-        max_temp["date"].append(
-            parsed_data["PKT"][
-                parsed_data["Max TemperatureC"].index(max_temp["value"][-1])
-            ]
-        )
-
-        min_temp["value"].append(min(parsed_data["Min TemperatureC"]))
-        min_temp["date"].append(
-            parsed_data["PKT"][
-                parsed_data["Min TemperatureC"].index(min_temp["value"][-1])
-            ]
-        )
-
-        max_humidity["value"].append(max(parsed_data["Max Humidity"]))
-        max_humidity["date"].append(
-            parsed_data["PKT"][
-                parsed_data["Max Humidity"].index(max_humidity["value"][-1])
-            ]
-        )
-
-    # defining dictionary for month names
-    month_names = {
-        1: "Jan",
-        2: "Feb",
-        3: "Mar",
-        4: "Apr",
-        5: "May",
-        6: "Jun",
-        7: "Jul",
-        8: "Aug",
-        9: "Sep",
-        10: "Oct",
-        11: "Nov",
-        12: "Dec",
-    }
-
-    # returning the data
-    max_temp_val = max_temp["date"][max_temp["value"].index(max(max_temp["value"]))]
-    min_temp_val = min_temp["date"][min_temp["value"].index(min(min_temp["value"]))]
-    max_humidity_val = max_humidity["date"][
-        max_humidity["value"].index(max(max_humidity["value"]))
-    ]
+        for data_type, data_dict in [
+            (MAX_TEMP, max_temp),
+            (MIN_TEMP, min_temp),
+            (MAX_HUMIDITY, max_humidity),
+        ]:
+            extreme = find_extreme_value_and_date(
+                parsed_data[data_type],
+                parsed_data[PKT],
+                find_max=(data_type != MIN_TEMP),
+            )
+            data_dict["value"].append(extreme["value"])
+            data_dict["date"].append(extreme["date"])
 
     return {
         "Highest": {
             "Temperature": f"{max(max_temp['value'])}C",
-            "Date": f"{month_names[int(max_temp_val.split('-')[1])]} {max_temp_val.split('-')[2]}",
+            "Date": format_date(
+                max_temp["date"][max_temp["value"].index(max(max_temp["value"]))]
+            ),
         },
         "Lowest": {
             "Temperature": f"{min(min_temp['value'])}C",
-            "Date": f"{month_names[int(min_temp_val.split('-')[1])]} {min_temp_val.split('-')[2]}",
+            "Date": format_date(
+                min_temp["date"][min_temp["value"].index(min(min_temp["value"]))]
+            ),
         },
         "Max Humidity": {
             "Humidity": f"{max(max_humidity['value'])}%",
-            "Date": f"{month_names[int(max_humidity_val.split('-')[1])]} {max_humidity_val.split('-')[2]}",
+            "Date": format_date(
+                max_humidity["date"][
+                    max_humidity["value"].index(max(max_humidity["value"]))
+                ]
+            ),
         },
     }

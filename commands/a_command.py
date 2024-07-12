@@ -3,72 +3,45 @@ import sys
 
 # Ensure the root directory is in the sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import DATA_DIR
-
+from config import DATA_DIR, MONTH_NAMES, MAX_TEMP, MIN_TEMP, MEAN_HUMIDITY
 from parser.parse_any import parse_file
+from commands.utils import convert_to_int, remove_empty_strings, calculate_average
 
 
 def handle_a_command(date, dir_path=DATA_DIR):
     """
-    This function parses files for given year and gives highest temperature, lowest temperature and max humiidty along with dates
+    Parse files for given year and provide highest temperature,
+    lowest temperature and max humidity along with dates.
 
-    Params:
-    - year: year for which data is to be displayed
-    - dir_path: directory where data is stored
+    Args:
+    date (str): Date in format "YYYY/MM"
+    dir_path (str): Directory where data is stored
+
+    Returns:
+    dict: Parsed data in a structured format
     """
+    year, month = date.split("/")
 
-    # defining dictionary for month names
-    month_names = {
-        1: "Jan",
-        2: "Feb",
-        3: "Mar",
-        4: "Apr",
-        5: "May",
-        6: "Jun",
-        7: "Jul",
-        8: "Aug",
-        9: "Sep",
-        10: "Oct",
-        11: "Nov",
-        12: "Dec",
-    }
-
-    # find file
-    year = date.split("/")[0]
-    month = date.split("/")[1]
-
-    # list all files in the directory containing year and month in the name
+    # List all files in the directory containing year and month in the name
     file = [
-        f for f in os.listdir(dir_path) if year in f and month_names[int(month)] in f
+        f for f in os.listdir(dir_path) if year in f and MONTH_NAMES[int(month)] in f
     ]
 
     if not file:
         return {"message": "No data found for the given date"}
 
     parsed_data = parse_file(
-        (DATA_DIR + "/" + file[0]),
-        ["Max TemperatureC", "Min TemperatureC", "Mean Humidity"],
+        os.path.join(DATA_DIR, file[0]),
+        [MAX_TEMP, MIN_TEMP, MEAN_HUMIDITY],
     )
 
-    # replace empty strings with 0
-    parsed_data["Max TemperatureC"] = [
-        0 if x == "" else x for x in parsed_data["Max TemperatureC"]
-    ]
-    parsed_data["Min TemperatureC"] = [
-        0 if x == "" else x for x in parsed_data["Min TemperatureC"]
-    ]
-    parsed_data["Mean Humidity"] = [
-        0 if x == "" else x for x in parsed_data["Mean Humidity"]
-    ]
+    # Remove empty strings and convert to integers
+    for key in [MAX_TEMP, MIN_TEMP, MEAN_HUMIDITY]:
+        parsed_data[key] = convert_to_int(remove_empty_strings(parsed_data[key]))
 
-    # convert array elements to int
-    parsed_data["Max TemperatureC"] = list(map(int, parsed_data["Max TemperatureC"]))
-    parsed_data["Min TemperatureC"] = list(map(int, parsed_data["Min TemperatureC"]))
-    parsed_data["Mean Humidity"] = list(map(int, parsed_data["Mean Humidity"]))
-
-    # return dictionary
+    # Calculate and return averages
     return {
-        "Highest Average": f"{int(sum(parsed_data['Max TemperatureC'])/len(parsed_data['Max TemperatureC']))}C",
-        "Lowest Average": f"{int(sum(parsed_data['Min TemperatureC'])/len(parsed_data['Min TemperatureC']))}C",
-        "Mean Humidity": f"{int(sum(parsed_data['Mean Humidity'])/len(parsed_data['Mean Humidity']))}%",
+        "Highest Average": f"{calculate_average(parsed_data[MAX_TEMP])}C",
+        "Lowest Average": f"{calculate_average(parsed_data[MIN_TEMP])}C",
+        "Mean Humidity": f"{calculate_average(parsed_data[MEAN_HUMIDITY])}%",
     }

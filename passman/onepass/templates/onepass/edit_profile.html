@@ -1,90 +1,24 @@
 <!-- onepass/templates/onepass/edit_profile.html -->
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'onepass/base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #E6E6FA;
-            /* Light lavender background */
-        }
+{% block title %}Edit Profile{% endblock %}
 
-        .form-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .form-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-
-        .form-box h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .form-box form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-box input {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .form-box button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .form-box button:hover {
-            background-color: #45a049;
-        }
-
-        .form-box .messages {
-            margin-bottom: 20px;
-            color: red;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="form-container">
-        <div class="form-box">
-            <h1>Edit Profile</h1>
-            {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                <p>{{ message }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Update Password</button>
-            </form>
+{% block content %}
+<div class="form-container">
+    <div class="form-box">
+        <h1>Edit Profile</h1>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
         </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Update Password</button>
+        </form>
     </div>
-</body>
-
-</html>
+</div>
+{% endblock %}

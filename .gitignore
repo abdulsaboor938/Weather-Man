@@ -1,6 +1,2 @@
-#  all files in weatherman directory
-CLI/data
+
 .DS_Store
-/data
-*.pyc
-flask/data
